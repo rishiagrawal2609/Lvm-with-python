@@ -43,7 +43,7 @@ while a == True:
     elif (uc == 4):
         lvm.introHeader()
         no = int(input("How many Physical Volume to add: "))
-        for i in range(n)
+        for i in range(no):
             vol = input("Enter volume you want to add: ")
             lvm.extendVolumeGroup(vol)
         continue
@@ -53,23 +53,18 @@ while a == True:
         b=True
         while b == True:
             choose = int(input("Select one you want the details:\n 1.Physical Volume\n \
-                2.Volume Group\n 3. Logical Volume\n 4.exit\n Your selection: ")
+            2.Volume Group\n 3. Logical Volume\n 4.exit\n Your selection: ")
             if (choose == 1):
                 lvm.detailsPhysicalVolume()
-                continue
             elif (choose == 2):
                 lvm.detailsVolumeGroup()
-                continue
             elif (choose == 3):
                 lvm.detailsLogicalVolume()
-                continue
             elif (choose = 4):
                 b= False
-                continue
             else:
                 print("No option Like that available, please select \
                     between 1 to 4")
-                continue
         continue
     elif (uc == 6):
         a = False

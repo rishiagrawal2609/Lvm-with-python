@@ -1,5 +1,5 @@
 import subprocess
-
+import os 
 def checkAvailableDisks():
     print(subprocess.run("lsblk"))
 
@@ -15,17 +15,17 @@ def VolList():
 
 def createPhysicalVolume(VolumeList):
     for i in VolumeList:
-        subprocess.run(f"pvcreate {i}")
+        os.system(f"pvcreate {i}")
         print(f"{i} Drive is converted to Physical Volume")
     print("All the drives are converted to Physical Volume")
 
 def extendVolumeGroup(Volume):
-        subprocess.run(f"vgextend {Volume}")
+        os.system(f"vgextend {Volume}")
         print(f"{Volume} is added to Volume Group")
 
 def createVolumeGroup(VolumeList):
     volGrpName = input("Enter the name you want to give to your Volume Group: ")
-    subprocess.run(f"vgcreate {volGrpName} {VolumeList[0]}")
+    os.system(f"vgcreate {volGrpName} {VolumeList[0]}")
     for i in range(1,len(VolumeList)):
         extendVolumeGroup(VolumeList[i])
     print("Volume Group created with the name {}!".format(volGrpName))
@@ -34,7 +34,7 @@ def createVolumeGroup(VolumeList):
 def createLogicalVolume(volGrpName):
     logVolName = input("Enter the name you want to give to your Logical Volume: ")
     logVolsize= input("Enter the size of Logical Volume you want to create(in G): ")
-    subprocess.run(f"lvcreate --size {logVolsize}G  --name {logVolName}")
+    os.system(f"lvcreate --size {logVolsize}G  --name {logVolName}")
     print(f"Logical Volume of size {logVolsize}GB is created with the name {logVolName}")
     return logVolName
 
@@ -42,45 +42,46 @@ def extendLogicalVolume(volGrpName,logVolName):
     volGrpName = input("Enter the name of your Volume Group: ")
     logVolName = input("Enter the name of your Logical volume: ")
     addvol=input(f"How much you want to add extra in {logVolName}(in GB): ")
-    subprocess.run(f"lvextend --size +{addvol}G /dev/{volGrpName}/{logVolName}")
+    os.system(f"lvextend --size +{addvol}G /dev/{volGrpName}/{logVolName}")
     print(f"Logical Volume size increased by {addvol}")
 
 def decreaseLogicalVolume(volGrpName,logVolName):
     print("WARNING THIS CAN DESTROY YOUR DATA AND NOT SUPPORTED IN GFS2 AND XFS FORMATS\n"*3)
     decvol = input(f"Enter the size by which you want to decrease in {logVolName}(in GB): ")
-    subprocess.run(f"lvreduce --resizefs -L -{decvol} /dev/{volGrpName}/{logVolName}")
+    os.system(f"lvreduce --resizefs -L -{decvol} /dev/{volGrpName}/{logVolName}")
     print(f"Logical Volume size reduced by {decvol}")
 
 def firstFormat(logVolName,volGrpName):
     print("Performing EXT4 formating for first time")
-    subprocess.run(f"mkfs.ext4 /dev/{volGrpName}/{logVolName}")
+    os.system(f"mkfs.ext4 /dev/{volGrpName}/{logVolName}")
     print("Format complete, disk is ready for mounting!")
 
 def extendedFormat(logVolName,volGrpName):
-    subprocess.run(f"resize2fs /dev/{volGrpName}/{logVolName}")
+    os.system(f"resize2fs /dev/{volGrpName}/{logVolName}")
     print("Formated extended Volume!")
 
 def mount(logVolName,volGrpName):
     des= input("Do you have existing dir on which you have to mount?:(Y/N) ")
+    dirname = ''
     if(des == 'Y'):
         dirName = input("Add dir path you want to mount: ")
     else:
         dirname = input("Give name to dir where you want to mount: ")
-        subprocess.run(f"mkdir /{dirName}")
-    subprocess.run(f"mount /dev/{volGrpName}/{logVolName}")
+        os.system(f"mkdir /{dirName}")
+    os.system(f"mount /dev/{volGrpName}/{logVolName}")
 
 def detailsPhysicalVolume():
     pv = input("Enter the Physical Volume which you want to see details: ")
-    print(subprocess.run(f"pvdisplay {pv}"))
+    print(os.system(f"pvdisplay {pv}"))
 
 def detailsVolumeGroup(volGrpName):
     vg = input("Enter the Volume Group which you want to see details: ")
-    print(subprocess.run(f"vgdisplay {vg}"))
+    print(os.system(f"vgdisplay {vg}"))
 
 def detailsLogicalVolume():
     vg = input("Enter the Volume Group where the Logical Volume is located: ")
     lv = input("Enter the logical Volume which you want to see details: ")
-    print(subprocess.run(f"lvdisplay {vg}/{lv}"))
+    print(os.system(f"lvdisplay {vg}/{lv}"))
 
 def introHeader():
     print(""" 
