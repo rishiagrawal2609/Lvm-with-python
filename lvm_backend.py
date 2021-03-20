@@ -4,6 +4,7 @@ def checkAvailableDisks():
     print(subprocess.run("lsblk"))
 
 def VolList():
+    global VolumeList
     VolumeList = []
     Vol=int(input("Number of volume you want to add to Volume Group: "))
     for i in range(Vol):
@@ -23,19 +24,23 @@ def extendVolumeGroup(Volume):
         print(f"{Volume} is added to Volume Group")
 
 def createVolumeGroup(VolumeList):
-    global volGrpName= input("Enter the name you want to give to your Volume Group: ")
+    volGrpName = input("Enter the name you want to give to your Volume Group: ")
     subprocess.run(f"vgcreate {volGrpName} {VolumeList[0]}")
     for i in range(1,len(VolumeList)):
         extendVolumeGroup(VolumeList[i])
     print("Volume Group created with the name {}!".format(volGrpName))
+    return volGrpName
 
 def createLogicalVolume(volGrpName):
-    global logVolName= input("Enter the name you want to give to your Volume Group: ")
+    logVolName = input("Enter the name you want to give to your Logical Volume: ")
     logVolsize= input("Enter the size of Logical Volume you want to create(in G): ")
     subprocess.run(f"lvcreate --size {logVolsize}G  --name {logVolName}")
     print(f"Logical Volume of size {logVolsize}GB is created with the name {logVolName}")
+    return logVolName
 
-def extendLogicalVolume(logVolName,volGrpName):
+def extendLogicalVolume(volGrpName,logVolName):
+    volGrpName = input("Enter the name of your Volume Group: ")
+    logVolName = input("Enter the name of your Logical volume: ")
     addvol=input(f"How much you want to add extra in {logVolName}(in GB): ")
     subprocess.run(f"lvextend --size +{addvol}G /dev/{volGrpName}/{logVolName}")
     print(f"Logical Volume size increased by {addvol}")
@@ -64,11 +69,34 @@ def mount(logVolName,volGrpName):
         subprocess.run(f"mkdir /{dirName}")
     subprocess.run(f"mount /dev/{volGrpName}/{logVolName}")
 
-def detailsPhysicalVolume(volname):
-    print(subprocess.run(f"pvdisplay {volname}"))
+def detailsPhysicalVolume():
+    pv = input("Enter the Physical Volume which you want to see details: ")
+    print(subprocess.run(f"pvdisplay {pv}"))
 
-def detailsPhysicalVolume(volGrpName):
-    print(subprocess.run(f"vgdisplay {volGrpName}"))
+def detailsVolumeGroup(volGrpName):
+    vg = input("Enter the Volume Group which you want to see details: ")
+    print(subprocess.run(f"vgdisplay {vg}"))
 
-def detailsPhysicalVolume(logVolName,volGrpName):
-    print(subprocess.run(f"lvdisplay {volGrpName}/{logVolName}"))
+def detailsLogicalVolume():
+    vg = input("Enter the Volume Group where the Logical Volume is located: ")
+    lv = input("Enter the logical Volume which you want to see details: ")
+    print(subprocess.run(f"lvdisplay {vg}/{lv}"))
+
+def introHeader():
+    print(""" 
+    $$\   $$\           $$\                           $$\   $$\    $$\ $$\      $$\                     $$\   $$\     $$\             $$$$$$$\ $$\     $$\ $$$$$$$$\ $$\   $$\  $$$$$$\  $$\   $$\ 
+    $$ |  $$ |          \__|                          $$ |  $$ |   $$ |$$$\    $$$ |                    \__|  $$ |    $$ |            $$  __$$\\$$\   $$  |\__$$  __|$$ |  $$ |$$  __$$\ $$$\  $$ |
+    $$ |  $$ | $$$$$$$\ $$\ $$$$$$$\   $$$$$$\        $$ |  $$ |   $$ |$$$$\  $$$$ |      $$\  $$\  $$\ $$\ $$$$$$\   $$$$$$$\        $$ |  $$ |\$$\ $$  /    $$ |   $$ |  $$ |$$ /  $$ |$$$$\ $$ |
+    $$ |  $$ |$$  _____|$$ |$$  __$$\ $$  __$$\       $$ |  \$$\  $$  |$$\$$\$$ $$ |      $$ | $$ | $$ |$$ |\_$$  _|  $$  __$$\       $$$$$$$  | \$$$$  /     $$ |   $$$$$$$$ |$$ |  $$ |$$ $$\$$ |
+    $$ |  $$ |\$$$$$$\  $$ |$$ |  $$ |$$ /  $$ |      $$ |   \$$\$$  / $$ \$$$  $$ |      $$ | $$ | $$ |$$ |  $$ |    $$ |  $$ |      $$  ____/   \$$  /      $$ |   $$  __$$ |$$ |  $$ |$$ \$$$$ |
+    $$ |  $$ | \____$$\ $$ |$$ |  $$ |$$ |  $$ |      $$ |    \$$$  /  $$ |\$  /$$ |      $$ | $$ | $$ |$$ |  $$ |$$\ $$ |  $$ |      $$ |         $$ |       $$ |   $$ |  $$ |$$ |  $$ |$$ |\$$$ |
+    \$$$$$$  |$$$$$$$  |$$ |$$ |  $$ |\$$$$$$$ |      $$$$$$$$\\$  /   $$ | \_/ $$ |      \$$$$$\$$$$  |$$ |  \$$$$  |$$ |  $$ |      $$ |         $$ |       $$ |   $$ |  $$ | $$$$$$  |$$ | \$$ |
+    \______/ \_______/ \__|\__|  \__| \____$$ |      \________|\_/    \__|     \__|       \_____\____/ \__|   \____/ \__|  \__|      \__|         \__|       \__|   \__|  \__| \______/ \__|  \__|
+                                    $$\   $$ |                                                                                                                                                   
+                                    \$$$$$$  |                                                                                                                                                   
+                                    \______/                                                                                                                                                    
+                                                                                                                                                                                By Rishi Agrawal
+    """)
+
+def clearScreen():
+    subprocess.run("clear")
