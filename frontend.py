@@ -36,8 +36,8 @@ while a == True:
 
     elif (uc == 3):
         lvm.introHeader()
-        vol = volList()
-        createPhysicalVolume(vol)
+        vol = lvm.VolList()
+        lvm.createPhysicalVolume(vol)
         continue
 
     elif (uc == 4):
@@ -52,15 +52,15 @@ while a == True:
         lvm.introHeader()
         b=True
         while b == True:
-            choose = int(input("Select one you want the details:\n 1.Physical Volume\n \
-            2.Volume Group\n 3. Logical Volume\n 4.exit\n Your selection: ")
+            print("Select one you want the details:\n 1.Physical Volume\n 2.Volume Group \n 3. Logical Volume\n 4.exit")
+            choose = int(input("Your selection:"))
             if (choose == 1):
                 lvm.detailsPhysicalVolume()
             elif (choose == 2):
                 lvm.detailsVolumeGroup()
             elif (choose == 3):
                 lvm.detailsLogicalVolume()
-            elif (choose = 4):
+            elif (choose == 4):
                 b= False
             else:
                 print("No option Like that available, please select \
@@ -82,18 +82,3 @@ print("""
    ██    ██   ██ ██   ██ ██   ████ ██   ██ ███████     ██       ██████  ██   ██      ██████  ███████ ██ ██   ████  ██████         ██    ██   ██ ██ ███████        ██     ██████   ██████  ███████ 
                                                                                                                                                                                                   
 """)
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
-

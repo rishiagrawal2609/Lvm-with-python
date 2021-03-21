@@ -74,7 +74,7 @@ def detailsPhysicalVolume():
     pv = input("Enter the Physical Volume which you want to see details: ")
     print(os.system(f"pvdisplay {pv}"))
 
-def detailsVolumeGroup(volGrpName):
+def detailsVolumeGroup():
     vg = input("Enter the Volume Group which you want to see details: ")
     print(os.system(f"vgdisplay {vg}"))
 
