@@ -41,8 +41,9 @@ def createLogicalVolume(volGrpName):
 def extendLogicalVolume(volGrpName,logVolName):
     addvol=input(f"How much you want to add extra in {logVolName}(in GB): ")
     os.system(f"lvextend --size +{addvol}G /dev/{volGrpName}/{logVolName}")
-    print(f"Logical Volume size increased by {addvol}")
     os.system("df -h")
+    print(f"Logical Volume size increased by {addvol}")
+    
 
 def decreaseLogicalVolume(volGrpName,logVolName):
     print("WARNING THIS CAN DESTROY YOUR DATA AND NOT SUPPORTED IN GFS2 AND XFS FORMATS\n"*3)
