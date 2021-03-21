@@ -19,31 +19,30 @@ def createPhysicalVolume(VolumeList):
         print(f"{i} Drive is converted to Physical Volume")
     print("All the drives are converted to Physical Volume")
 
-def extendVolumeGroup(Volume):
-        os.system(f"vgextend {Volume}")
+def extendVolumeGroup(Volume, vgname):
+        os.system(f"vgextend {vgname} {Volume}")
         print(f"{Volume} is added to Volume Group")
 
 def createVolumeGroup(VolumeList):
     volGrpName = input("Enter the name you want to give to your Volume Group: ")
     os.system(f"vgcreate {volGrpName} {VolumeList[0]}")
     for i in range(1,len(VolumeList)):
-        extendVolumeGroup(VolumeList[i])
+        extendVolumeGroup(VolumeList[i],volGrpName)
     print("Volume Group created with the name {}!".format(volGrpName))
     return volGrpName
 
 def createLogicalVolume(volGrpName):
     logVolName = input("Enter the name you want to give to your Logical Volume: ")
     logVolsize= input("Enter the size of Logical Volume you want to create(in G): ")
-    os.system(f"lvcreate --size {logVolsize}G  --name {logVolName}")
+    os.system(f"lvcreate --size {logVolsize}G  --name {logVolName} {volGrpName}")
     print(f"Logical Volume of size {logVolsize}GB is created with the name {logVolName}")
     return logVolName
 
 def extendLogicalVolume(volGrpName,logVolName):
-    volGrpName = input("Enter the name of your Volume Group: ")
-    logVolName = input("Enter the name of your Logical volume: ")
     addvol=input(f"How much you want to add extra in {logVolName}(in GB): ")
     os.system(f"lvextend --size +{addvol}G /dev/{volGrpName}/{logVolName}")
     print(f"Logical Volume size increased by {addvol}")
+    os.system("df -h")
 
 def decreaseLogicalVolume(volGrpName,logVolName):
     print("WARNING THIS CAN DESTROY YOUR DATA AND NOT SUPPORTED IN GFS2 AND XFS FORMATS\n"*3)
@@ -58,7 +57,7 @@ def firstFormat(logVolName,volGrpName):
 
 def extendedFormat(logVolName,volGrpName):
     os.system(f"resize2fs /dev/{volGrpName}/{logVolName}")
-    print("Formated extended Volume!")
+    print("Formated the extended Volume!")
 
 def mount(logVolName,volGrpName):
     des= input("Do you have existing dir on which you have to mount?:(Y/N) ")
@@ -66,9 +65,11 @@ def mount(logVolName,volGrpName):
     if(des == 'Y'):
         dirName = input("Add dir path you want to mount: ")
     else:
-        dirname = input("Give name to dir where you want to mount: ")
+        dirName = input("Give name to dir where you want to mount: ")
         os.system(f"mkdir /{dirName}")
-    os.system(f"mount /dev/{volGrpName}/{logVolName}")
+    os.system(f"mount /dev/{volGrpName}/{logVolName} /{dirName}")
+    os.system("df -h")
+    print(f"Disk has mounted over the /{dirName}")
 
 def detailsPhysicalVolume():
     pv = input("Enter the Physical Volume which you want to see details: ")
