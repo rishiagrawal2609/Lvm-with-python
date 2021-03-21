@@ -53,18 +53,23 @@ while a == True:
         b=True
         while b == True:
             print("Select one you want the details:\n 1.Physical Volume\n 2.Volume Group \n 3. Logical Volume\n 4.exit")
-            choose = int(input("Your selection:"))
+            choose = int(input("Your selection: "))
             if (choose == 1):
                 lvm.detailsPhysicalVolume()
+                continue
             elif (choose == 2):
                 lvm.detailsVolumeGroup()
+                continue
             elif (choose == 3):
                 lvm.detailsLogicalVolume()
+                continue
             elif (choose == 4):
                 b= False
+                continue
             else:
                 print("No option Like that available, please select \
                     between 1 to 4")
+                continue
         continue
     elif (uc == 6):
         a = False
