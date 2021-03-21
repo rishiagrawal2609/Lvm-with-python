@@ -42,10 +42,11 @@ while a == True:
 
     elif (uc == 4):
         lvm.introHeader()
+        vgname = input("Name of Volume Group you want to extend: ")
         no = int(input("How many Physical Volume to add: "))
         for i in range(no):
             vol = input("Enter volume you want to add: ")
-            lvm.extendVolumeGroup(vol)
+            lvm.extendVolumeGroup(vol,vgname)
         continue
 
     elif (uc == 5):
